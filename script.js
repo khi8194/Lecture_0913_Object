@@ -22,7 +22,7 @@
 
 //객체 리터럴 방식
 const student1 = {
-	name: 'Andy',
+	name: "Andy",
 	age: 20,
 	isFemale: false
 };
@@ -31,16 +31,16 @@ const student1 = {
 console.log(student1.name);
 
 //연관배열 형식
-console.log(student1['age']);
+console.log(student1["age"]);
 
 //객체의 property key에 함수도 등록 가능
 const student2 = {
-	name: 'Julia',
+	name: "Julia",
 	age: 30,
 	isFemale: true,
 	inform: () => {
 		// console.log('My name is Julia and I am 30 years old.');
-        console.log(this);
+		console.log(this);
 	}
 };
 
@@ -48,7 +48,6 @@ const student2 = {
 //자바스크립트에서는 이처럼 객체 property로 등록가능하거나 함수의 인수로 전달가능하거나
 //변수에 대입할 수 있는 함수를 일급 객체라고 표현
 student2.inform();
-
 
 //객체리터럴 안쪽에서의 this: window객체 (전역객체)
 
@@ -59,20 +58,32 @@ student2.inform();
 //     this.isFemale = true;
 // }
 function Student(props) {
-    this.name = props.name;
-    this.age = props.age || 20;     //대입되는 값뒤에 ||연산자를 입력하면 해당 값이 undefined대신 대체값을 설정
-    this.isFemale = props.isFemale;
+	this.name = props.name; //생성자 안쪽의 this: 해당 생성자를 통해서 앞으로 복사가 될 인스턴스 객체를 지칭
+	this.age = props.age || 20; //대입되는 값뒤에 ||연산자를 입력하면 해당 값이 undefined대신 대체값을 설정
+	this.isFemale = props.isFemale;
 }
-
+Student.prototype.inform = function () {
+	console.log("My name is " + this.name + " and I am " + this.age + " years old.");
+};
 
 // 아래와 같이 new 연산자를 이용해서 Student 생성자 함수 호출하면
 // 인스턴스라는 특별한 복사본 객체를 생성가능
 // 인스턴스 객체는 같은 생성자함수를 통해서 생성된 모든 인스턴스들이 공유할 수 있는 prototype이라는 공간을 공유
 // prototype: 해당 본사본 객체들이 공통적으로 활용해야 되는 함수를 등록(메서드)
 // const studentCopy1 = new Student();
-const studentCopy1 = new Student({name: 'Emily', age: 20, isFemale: true});
-const studentCopy2 = new Student({name: 'David', isFemale: false});
-const studentCopy3 = new Student({name: 'Michael', isFemale: false, age: 19});
+const studentCopy1 = new Student({ name: "Emily", age: 20, isFemale: true });
+const studentCopy2 = new Student({ name: "David", isFemale: false });
+const studentCopy3 = new Student({ name: "Michael", isFemale: false, age: 19 });
+//생성자 함수를 통해서 인스턴스라는 복사본을 만들면 약속된 정보값과 매칭되지 않는 값을 거를 수 있음
+//Student라는 생성자 함수 안에는 address값을 인스턴스로 전달하는 항목이 업식 떄문에 의도치 않은 address 정보가 입력되어도
+//인스턴스에는 잘못된 정보가 전달되지 않음
+const studentCopy4 = new Student({ name: "Paul", isFemale: false, address: "Seoul" });
+//출력값 -->  Student {name: 'Paul', age: 20, isFemale: false}
+
 console.log(studentCopy1);
 console.log(studentCopy2);
 console.log(studentCopy3);
+console.log(studentCopy4);
+
+studentCopy1.inform();
+studentCopy2.inform();
